@@ -9,39 +9,39 @@ hash since there can only be one SOA information.
 
 The following hash keys are returned per record type:
 
-* SOA
+* SOA  
      :ttl, :primary, :email, :serial, :refresh, :retry, :expire, :minimumTTL
-* A
+* A  
      :name, :ttl, :class, :host
-* MX
-    - :name, :ttl, :class, :pri, :host
-* NS
-    - :name, :ttl, :class, :host
-* CNAME
-    - :name, :ttl, :class, :host
-* TXT
-    - :name, :ttl, :class, :text
-* A4 (AAAA)
-    - :name, :ttl, :class, :host
-* PTR
-    - :name, :ttl, :class, :host
-* SRV
-    - :name, :ttl, :class, :pri, :weight, :port, :host
-* DS
-    - :name, :ttl, :class, :key_tag, :algorithm, :digest_type, :digest
-* DNSKEY
-    - :name, :ttl, :class, :flag, :protocol, :algorithm, :public_key
-* RRSIG
-    - :name, :ttl, :class, :type_covered, :algorithm, :labels, :original_ttl,
+* MX  
+     :name, :ttl, :class, :pri, :host
+* NS  
+     :name, :ttl, :class, :host
+* CNAME   
+     :name, :ttl, :class, :host
+* TXT  
+     :name, :ttl, :class, :text
+* A4 (AAAA)  
+     :name, :ttl, :class, :host
+* PTR  
+     :name, :ttl, :class, :host
+* SRV  
+     :name, :ttl, :class, :pri, :weight, :port, :host
+* DS  
+     :name, :ttl, :class, :key_tag, :algorithm, :digest_type, :digest
+* DNSKEY  
+     :name, :ttl, :class, :flag, :protocol, :algorithm, :public_key
+* RRSIG  
+     :name, :ttl, :class, :type_covered, :algorithm, :labels, :original_ttl,
       :expiration, :inception, :key_tag, :signer, :signature
-* NSEC
-    - :name, :ttl, :class, :next, :types
-* NSEC3
-    - :name, :ttl, :class, :algorithm, :flags, :iterations, :salt, :next, :types
-* NSEC3PARAM
-    - :name, :ttl, :class, :algorithm, :flags, :iterations, :salt
-* NAPTR
-    - :name, :ttl, :class, :order, :preference, :flags, :service, :regexp, :replacement
+* NSEC  
+     :name, :ttl, :class, :next, :types
+* NSEC3  
+     :name, :ttl, :class, :algorithm, :flags, :iterations, :salt, :next, :types
+* NSEC3PARAM  
+     :name, :ttl, :class, :algorithm, :flags, :iterations, :salt
+* NAPTR  
+     :name, :ttl, :class, :order, :preference, :flags, :service, :regexp, :replacement
 
 # Examples
 
