@@ -40,6 +40,8 @@ The following hash keys are returned per record type:
      :name, :ttl, :class, :algorithm, :flags, :iterations, :salt, :next, :types
 * NSEC3PARAM  
      :name, :ttl, :class, :algorithm, :flags, :iterations, :salt
+* TLSA  
+     :name, :ttl, :class, :certificate_usage, :selector, :matching_type, :data
 * NAPTR  
      :name, :ttl, :class, :order, :preference, :flags, :service, :regexp, :replacement
 
@@ -94,3 +96,5 @@ You can switch this off globally by calling Zonefile.preserve_name(false)
 Martin Boese, based on Simon Flack Perl library DNS::ZoneParse 
 
 Andy Newton, patch to support various additional records
+
+Julian Kornberger, patch to support TLSA records

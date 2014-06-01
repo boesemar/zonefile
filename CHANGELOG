@@ -2,3 +2,4 @@
 1.01 - Fixes
 1.02 - Fixes
 1.03 - Fixes TXT records, quotes are not treated anymore
+1.05 - Adds support for TLSA records

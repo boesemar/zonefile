@@ -302,6 +302,22 @@ SIGNATURE
     end unless @swap_rrsig
   end
 
+  def test_tlsa
+    assert_equal "_443._tcp.www.example.com.", @zf.tlsa[0][:name]
+    assert_equal '86400', @zf.srv[0][:ttl]
+    assert_equal 1, @zf.tlsa[0][:certificate_usage]
+    assert_equal 1, @zf.tlsa[0][:selector]
+    assert_equal 2, @zf.tlsa[0][:matching_type]
+
+    sig = <<SIGNATURE.gsub( /\s+/,'').strip
+        92003ba34942dc74152e2f2c408d29ec
+        a5a520e7f2e06bb944f4dca346baf63c
+        1b177615d466f6c4b71c216a50292bd5
+        8c9ebdd2f74e38fe51ffd48c43326cbc
+SIGNATURE
+    assert_equal sig, @zf.tlsa[0][:data].gsub( /\s+/,'')
+  end
+
   def test_origin
      assert_equal 'test-zone.db', @zf.origin
      swap
