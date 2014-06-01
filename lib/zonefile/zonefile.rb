@@ -40,6 +40,8 @@
 #    - :name, :ttl, :class, :algorithm, :flags, :iterations, :salt, :next, :types
 # * NSEC3PARAM
 #    - :name, :ttl, :class, :algorithm, :flags, :iterations, :salt
+# * TLSA
+#    - :name, :ttl, :class, :certificate_usage, :selector, :matching_type, :data
 # * NAPTR
 #    - :name, :ttl, :class, :order, :preference, :flags, :service, :regexp, :replacement
 #
@@ -98,7 +100,7 @@
 
 class Zonefile
 
- RECORDS = %w{ mx a a4 ns cname txt ptr srv soa ds dnskey rrsig nsec nsec3 nsec3param naptr }
+ RECORDS = %w{ mx a a4 ns cname txt ptr srv soa ds dnskey rrsig nsec nsec3 nsec3param tlsa naptr }
  attr :records
  attr :soa
  attr :data
@@ -310,6 +312,16 @@ class Zonefile
       add_record( 'rrsig', :name => $1, :ttl => $2, :class => $3, :type_covered => $4, :algorithm => $5,
                   :labels => $6.to_i, :original_ttl => $7.to_i, :expiration => $8.to_i, :inception => $9.to_i,
                   :key_tag => $10.to_i, :signer => $11, :signature => $12.gsub( /\s/,'')  )
+    elsif line=~/^(#{valid_name}) \s*
+                #{ttl_cls}
+                TLSA \s
+                (\d+) \s
+                (\d+) \s
+                (\d+) \s
+                #{base64}
+                /ix
+      add_record( 'tlsa', :name => $1, :ttl => $2, :class => $3, :certificate_usage => $4.to_i,
+                  :selector => $5.to_i, :matching_type => $6.to_i, :data => $7 )
     elsif line=~/^(#{valid_name})? \s*
                 #{ttl_cls}
                 NAPTR \s
@@ -452,6 +464,11 @@ ENDH
    out << "\n; Zone RRSIG Records\n" unless self.ds.empty?
    self.rrsig.each do |rrsig|
      out << "#{rrsig[:name]} #{rrsig[:ttl]} #{rrsig[:class]} RRSIG #{rrsig[:type_covered]} #{rrsig[:algorithm]} #{rrsig[:labels]} #{rrsig[:original_ttl]} #{rrsig[:expiration]} #{rrsig[:inception]} #{rrsig[:key_tag]} #{rrsig[:signer]} #{rrsig[:signature]}\n"
+   end
+
+   out << "\n; Zone TLSA Records\n" unless self.tlsa.empty?
+   self.tlsa.each do |tlsa|
+     out << "#{tlsa[:name]} #{tlsa[:ttl]} #{tlsa[:class]} TLSA #{tlsa[:certificate_usage]} #{tlsa[:selector]} #{tlsa[:matching_type]} #{tlsa[:data]}\n"
    end
 
    out << "\n; Zone NAPTR Records\n" unless self.ds.empty?
