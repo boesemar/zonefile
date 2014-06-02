@@ -316,6 +316,12 @@ SIGNATURE
         8c9ebdd2f74e38fe51ffd48c43326cbc
 SIGNATURE
     assert_equal sig, @zf.tlsa[0][:data].gsub( /\s+/,'')
+    
+    begin 
+      @swap_tlsa= true
+      swap
+      test_tlsa
+    end unless @swap_tlsa
   end
 
   def test_origin
