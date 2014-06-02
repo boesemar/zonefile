@@ -54,4 +54,9 @@ alfa.example.com. 86400 IN NSEC host.example.com. (
                                    A MX RRSIG NSEC TYPE1234 )
                         IN NSEC3   1 1 12 aabbccdd ( 2vptu5timamqttgl4luu7kg2leoaor3s A RRSIG )
                         IN NSEC3PARAM 1 0 12 aabbccdd
+_443._tcp.www.example.com. 86400 IN TLSA (
+                                    1 1 2 92003ba34942dc74152e2f2c408d29ec
+                                          a5a520e7f2e06bb944f4dca346baf63c
+                                          1b177615d466f6c4b71c216a50292bd5
+                                          8c9ebdd2f74e38fe51ffd48c43326cbc )
 urn.example.com.        IN NAPTR 100  50  "s"    "http+N2L+N2C+N2R"  ""   www.example.com.
