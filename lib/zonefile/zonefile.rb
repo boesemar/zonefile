@@ -2,9 +2,9 @@
 # = Ruby Zonefile - Parse and manipulate DNS Zone Files.
 #
 # == Description
-# This class can read, manipulate and create DNS zone files. It supports A, AAAA, MX, NS, SOA, 
+# This class can read, manipulate and create DNS zone files. It supports A, AAAA, MX, NS, SOA,
 # TXT, CNAME, PTR and SRV records. The data can be accessed by the instance method of the same
-# name. All except SOA return an array of hashes containing the named data. SOA directly returns the 
+# name. All except SOA return an array of hashes containing the named data. SOA directly returns the
 # hash since there can only be one SOA information.
 #
 # The following hash keys are returned per record type:
@@ -50,7 +50,7 @@
 # === Read a Zonefile
 #
 #  zf = Zonefile.from_file('/path/to/zonefile.db')
-#  
+#
 #  # Display MX-Records
 #  zf.mx.each do |mx_record|
 #     puts "Mail Exchagne with priority: #{mx_record[:pri]} --> #{mx_record[:host]}"
@@ -92,8 +92,8 @@
 # You can switch this off globally by calling Zonefile.preserve_name(false)
 #
 # == Authors
-# 
-# Martin Boese, based on Simon Flack Perl library DNS::ZoneParse 
+#
+# Martin Boese, based on Simon Flack Perl library DNS::ZoneParse
 #
 # Andy Newton, patch to support various additional records
 #
@@ -105,33 +105,33 @@ class Zonefile
  attr :soa
  attr :data
 # global $ORIGIN option
- attr :origin 
+ attr :origin
  # global $TTL option
  attr :ttl
- 
+
  @@preserve_name = true
 
- # For compatibility: This can switches off copying of the :name from the 
- # previous record in a zonefile if found omitted. 
- # This was zonefile's behavior in <= 1.03 .  
+ # For compatibility: This can switches off copying of the :name from the
+ # previous record in a zonefile if found omitted.
+ # This was zonefile's behavior in <= 1.03 .
  def self.preserve_name(do_preserve_name)
    @@preserve_name = do_preserve_name
  end
- 
+
  def method_missing(m, *args)
    mname = m.to_s.sub("=","")
    return super unless RECORDS.include?(mname)
-   
+
    if m.to_s[-1].chr == '=' then
      @records[mname.intern] = args.first
      @records[mname.intern]
-   else 
+   else
      @records[m]
    end
  end
 
 
- # Compact a zonefile content - removes empty lines, comments, 
+ # Compact a zonefile content - removes empty lines, comments,
  # converts tabs into spaces etc...
  def self.simplify(zf)
     # concatenate everything split over multiple lines in parentheses - remove ;-comments in block
@@ -158,13 +158,13 @@ class Zonefile
    @data = zonefile
    @filename = file_name
    @origin = origin || (file_name ? file_name.split('/').last : '')
-  
+
    @records = {}
    @soa = {}
    RECORDS.each { |r| @records[r.intern] = [] }
    parse
  end
- 
+
  # True if no records (except sao) is defined in this file
  def empty?
    RECORDS.each do |r|
@@ -172,12 +172,12 @@ class Zonefile
    end
    true
  end
- 
+
  # Create a new object by reading the content of a file
  def self.from_file(file_name, origin = nil)
     Zonefile.new(File.read(file_name), file_name.split('/').last, origin)
  end
- 
+
  def add_record(type, data= {})
     if @@preserve_name then
       @lastname = data[:name] if data[:name].to_s != ''
@@ -185,7 +185,7 @@ class Zonefile
     end
     @records[type.downcase.intern] << data
  end
- 
+
  # Generates a new serial number in the format of YYYYMMDDII if possible
  def new_serial
    base = "%04d%02d%02d" % [Time.now.year, Time.now.month, Time.now.day ]
@@ -195,12 +195,12 @@ class Zonefile
        @soa[:serial] = ns.to_s
        return ns.to_s
    end
-   
+
    ii = 0
    while (("#{base}%02d" % ii).to_i <= @soa[:serial].to_i) do
     ii += 1
    end
-   @soa[:serial] = "#{base}%02d" % ii   
+   @soa[:serial] = "#{base}%02d" % ii
  end
 
  def parse_line(line)
@@ -227,7 +227,7 @@ class Zonefile
     elsif line=~/^(#{valid_name})? \s*
                 #{ttl_cls}
                 AAAA \s
-                (#{valid_ip6})               
+                (#{valid_ip6})
                 /x then
               add_record('a4', :name => $1, :ttl => $2, :class => $3, :host => $4)
     elsif line=~/^(#{valid_name})? \s*
@@ -365,18 +365,18 @@ class Zonefile
             add_record('ptr', :name => $1, :class => $3, :ttl => $2, :host => $4)
     elsif line =~ /^(#{valid_name})? \s* #{ttl_cls} TXT \s+ (.*)$/ix
              add_record('txt', :name => $1, :ttl => $2, :class => $3, :text => $4.strip)
-    elsif line =~ /\$TTL\s+(#{rr_ttl})/i 
+    elsif line =~ /\$TTL\s+(#{rr_ttl})/i
             @ttl = $1
     end
  end
 
  def parse
     Zonefile.simplify(@data).each_line do |line|
-        parse_line(line)      
+        parse_line(line)
     end
  end
- 
- 
+
+
  # Build a new nicely formatted Zonefile
  #
  def output
@@ -395,9 +395,9 @@ class Zonefile
 
 #{@origin ? "$ORIGIN #{@origin}" : ''}
 #{@ttl ? "$TTL #{@ttl}" : ''}
-				
-; Zone NS Records
+
 ENDH
+   out << "\n; Zone NS Records\n" unless self.ns.empty?
    self.ns.each do |ns|
      out <<  "#{ns[:name]}	#{ns[:ttl]}	#{ns[:class]}	NS	#{ns[:host]}\n"
    end
@@ -405,16 +405,16 @@ ENDH
    self.mx.each do |mx|
      out << "#{mx[:name]}	#{mx[:ttl]}	#{mx[:class]}	MX	#{mx[:pri]} #{mx[:host]}\n"
    end
-   
+
    out << "\n; Zone A Records\n" unless self.a.empty?
    self.a.each do |a|
         out <<  "#{a[:name]}	#{a[:ttl]}	#{a[:class]}	A	#{a[:host]}\n"
-   end   
+   end
 
    out << "\n; Zone CNAME Records\n" unless self.cname.empty?
    self.cname.each do |cn|
      out << "#{cn[:name]}	#{cn[:ttl]}	#{cn[:class]}	CNAME	#{cn[:host]}\n"
-   end  
+   end
 
    out << "\n; Zone AAAA Records\n" unless self.a4.empty?
    self.a4.each do |a4|
@@ -430,7 +430,7 @@ ENDH
    self.srv.each do |srv|
      out << "#{srv[:name]}	#{srv[:ttl]}	#{srv[:class]}	SRV	#{srv[:pri]} #{srv[:weight]} #{srv[:port]}	#{srv[:host]}\n"
    end
-   
+
    out << "\n; Zone PTR Records\n" unless self.ptr.empty?
    self.ptr.each do |ptr|
      out << "#{ptr[:name]}	#{ptr[:ttl]}	#{ptr[:class]}	PTR	#{ptr[:host]}\n"
@@ -480,4 +480,3 @@ ENDH
  end
 
 end
-
