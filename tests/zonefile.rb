@@ -1,4 +1,4 @@
-require 'test/unit'
+require 'minitest/autorun'
 
 
 $: << File.expand_path(File.dirname(__FILE__) + '/../lib')
@@ -9,7 +9,7 @@ require 'zonefile'
 
 $zonefile = ARGV[0] || 'test-zone.db'
 
-class TC_Zonefile  < Test::Unit::TestCase
+class TC_Zonefile  < Minitest::Test
 
   def setup
     @zf = Zonefile.from_file(File.dirname(__FILE__) + '/'+$zonefile, 'test-origin')
@@ -32,7 +32,7 @@ class TC_Zonefile  < Test::Unit::TestCase
     assert_equal 2, @zf.ptr.size    
     assert @zf.ptr[0][:host] == data[0][:host]
     assert @zf.ptr[1][:name] == data[1][:name]
-    assert_raise(NoMethodError) do
+    assert_raises(NoMethodError) do
         @zf.dont_exist(123,123,123)
     end
   end
