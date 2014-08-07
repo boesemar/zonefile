@@ -100,7 +100,7 @@
 
 class Zonefile
 
- RECORDS = %w{ mx a a4 ns cname txt ptr srv soa ds dnskey rrsig nsec nsec3 nsec3param tlsa naptr }
+ RECORDS = %w{ mx a a4 ns cname txt ptr srv soa ds dnskey rrsig nsec nsec3 nsec3param tlsa naptr spf }
  attr :records
  attr :soa
  attr :data
@@ -365,6 +365,8 @@ class Zonefile
             add_record('ptr', :name => $1, :class => $3, :ttl => $2, :host => $4)
     elsif line =~ /^(#{valid_name})? \s* #{ttl_cls} TXT \s+ (.*)$/ix
              add_record('txt', :name => $1, :ttl => $2, :class => $3, :text => $4.strip)
+    elsif line =~ /^(#{valid_name})? \s* #{ttl_cls} SPF \s+ (.*)$/ix
+             add_record('spf', :name => $1, :ttl => $2, :class => $3, :text => $4.strip)
     elsif line =~ /\$TTL\s+(#{rr_ttl})/i 
             @ttl = $1
     end
@@ -424,6 +426,11 @@ ENDH
    out << "\n; Zone TXT Records\n" unless self.txt.empty?
    self.txt.each do |tx|
      out << "#{tx[:name]}	#{tx[:ttl]}	#{tx[:class]}	TXT	#{tx[:text]}\n"
+   end
+
+   out << "\n; Zone SPF Records\n" unless self.spf.empty?
+   self.spf.each do |spf|
+     out << "#{spf[:name]} #{spf[:ttl]} #{spf[:class]} SPF #{spf[:text]}\n"
    end
 
    out << "\n; Zone SRV Records\n" unless self.srv.empty?

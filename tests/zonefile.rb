@@ -132,6 +132,26 @@ class TC_Zonefile  < Minitest::Test
     end unless @swap_txt
   end
   
+  def test_spf
+    assert_equal '"v=spf1 mx ~all"', @zf.spf[0][:text]
+    assert_equal "IN", @zf.spf[0][:class]
+    assert_equal "@", @zf.spf[0][:name]
+    assert_equal '"v=spf1 -all"', @zf.spf[1][:text]
+    assert_equal 'www', @zf.spf[1][:name]
+    assert_nil @zf.spf[1][:class]
+    assert_equal "elsewhere", @zf.spf[2][:name]
+    assert_equal '"v=spf1 mx ?all"', @zf.spf[2][:text]
+
+    assert_equal 3, @zf.spf.size
+
+    begin
+      @swap_txt = true
+      swap
+      test_txt
+    end unless @swap_txt
+  end
+
+
   def test_a4
     assert_equal 'icarus', @zf.a4[0][:name]
     assert_equal 'IN', @zf.a4[0][:class]

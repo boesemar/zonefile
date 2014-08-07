@@ -15,6 +15,7 @@ $ORIGIN	 test-zone.db
 
 @                       IN	A	127.0.0.1
 @                       IN	MX	10	mail
+@                       IN  SPF "v=spf1 mx ~all"
 ftp                     IN	CNAME	www
 localhost               IN	A	127.0.0.1
 mail                    IN	A	127.0.0.1
@@ -24,11 +25,13 @@ www                     IN	A	127.0.0.1
                         IN      MX      10      10.0.0.4
                                 A       10.0.0.5
                                 TXT     "web;server"
+                                SPF     "v=spf1 -all"
 foo                     IN      A       10.0.0.6
 mini                            A       10.0.0.7
 icarus                  IN      AAAA    fe80::0260:83ff:fe7c:3a2a
 soup                    IN      TXT     "This is a text message"
 txta                            TXT     "t=y; o=-" 	; Nasty Comment
+elsewhere               IN      SPF     "v=spf1 mx ?all"
 _kerberos           IN  TXT     maxnet.ao
 _sip._tcp.example.com. 86400 IN SRV 0 5 5060 sipserver.example.com.
 12.23.21.23.in-addr.arpa	IN 	PTR	www.myhost.example.com.
