@@ -3,3 +3,6 @@
 
 ## Compiled Gems
 *.gem
+
+## Backup Files
+*~

@@ -44,6 +44,8 @@ The following hash keys are returned per record type:
      :name, :ttl, :class, :certificate_usage, :selector, :matching_type, :data
 * NAPTR  
      :name, :ttl, :class, :order, :preference, :flags, :service, :regexp, :replacement
+* SPF   
+     :name, :ttl, :class, :text
 
 # Examples
 
@@ -98,3 +100,7 @@ Martin Boese, based on Simon Flack Perl library DNS::ZoneParse
 Andy Newton, patch to support various additional records
 
 Julian Kornberger, patch to support TLSA records
+
+Nic P, SPF support
+
+Leon M, Fixes
