@@ -9,7 +9,7 @@ require 'zonefile'
 
 $zonefile = ARGV[0] || 'test-zone.db'
 
-class TC_Zonefile  < Minitest::Test
+class TC_Zonefile  < Minitest::Unit::TestCase
 
   def setup
     @zf = Zonefile.from_file(File.dirname(__FILE__) + '/'+$zonefile, 'test-origin')

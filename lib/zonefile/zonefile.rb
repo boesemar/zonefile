@@ -44,6 +44,8 @@
 #    - :name, :ttl, :class, :certificate_usage, :selector, :matching_type, :data
 # * NAPTR
 #    - :name, :ttl, :class, :order, :preference, :flags, :service, :regexp, :replacement
+# * SPF
+#    - :name, :ttl, :class, :text
 #
 # == Examples
 #
@@ -397,9 +399,8 @@ class Zonefile
 
 #{@origin ? "$ORIGIN #{@origin}" : ''}
 #{@ttl ? "$TTL #{@ttl}" : ''}
-				
-; Zone NS Records
 ENDH
+   out << "\n; Zone NS Records\n" unless self.ns.empty?
    self.ns.each do |ns|
      out <<  "#{ns[:name]}	#{ns[:ttl]}	#{ns[:class]}	NS	#{ns[:host]}\n"
    end
