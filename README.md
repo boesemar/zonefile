@@ -92,6 +92,9 @@ Since 1.04 the :name attribute is preserved and returned as defined in a previou
 omits it. This should be the expected behavior for most users.
 You can switch this off globally by calling Zonefile.preserve_name(false)
 
+# License
+
+MIT License
 
 # Authors
  
