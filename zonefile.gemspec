@@ -8,6 +8,7 @@ SPEC = Gem::Specification.new do |s|
  s.email        = 'martin@internet.ao'
  s.rubyforge_project = 'zonefile'
  s.homepage     = 'http://zonefile.rubyforge.org/'
+ s.license      = 'MIT'
  s.platform     = Gem::Platform::RUBY
  s.summary      = 'BIND 8/9 Zonefile Reader and Writer'
  s.description  = "A library that can create, read, write, modify BIND compatible Zonefiles (RFC1035).\n"+
