@@ -2,8 +2,7 @@
 # = Ruby Zonefile - Parse and manipulate DNS Zone Files.
 #
 # == Description
-# This class can read, manipulate and create DNS zone files. It supports A, AAAA, MX, NS, SOA, 
-# TXT, CNAME, PTR and SRV records. The data can be accessed by the instance method of the same
+# This class can read, manipulate and create DNS zone files. The data can be accessed by the instance method of the same
 # name. All except SOA return an array of hashes containing the named data. SOA directly returns the 
 # hash since there can only be one SOA information.
 #
@@ -46,6 +45,8 @@
 #    - :name, :ttl, :class, :order, :preference, :flags, :service, :regexp, :replacement
 # * SPF
 #    - :name, :ttl, :class, :text
+# * CAA
+#    - :name, :ttl, :class, :flag, :tag, :value
 #
 # == Examples
 #
@@ -102,7 +103,7 @@
 
 class Zonefile
 
- RECORDS = %w{ mx a a4 ns cname txt ptr srv soa ds dnskey rrsig nsec nsec3 nsec3param tlsa naptr spf }
+ RECORDS = %w{ mx a a4 ns cname txt ptr srv soa ds dnskey rrsig nsec nsec3 nsec3param tlsa naptr spf caa }
  attr :records
  attr :soa
  attr :data
@@ -365,6 +366,8 @@ class Zonefile
                 (#{valid_name})
                /ix
             add_record('ptr', :name => $1, :class => $3, :ttl => $2, :host => $4)
+    elsif line =~ /^(#{valid_name})? \s* #{ttl_cls} CAA\s+ (\d+) \s+ (#{valid_name}) \s+ (.*)$/ix
+            add_record('caa', :name => $1, :ttl => $2, :class => $3, :flag=> $4.to_i, :tag => $5, :value => $6)
     elsif line =~ /^(#{valid_name})? \s* #{ttl_cls} TXT \s+ (.*)$/ix
              add_record('txt', :name => $1, :ttl => $2, :class => $3, :text => $4.strip)
     elsif line =~ /^(#{valid_name})? \s* #{ttl_cls} SPF \s+ (.*)$/ix
@@ -483,6 +486,11 @@ ENDH
    self.naptr.each do |naptr|
      out << "#{naptr[:name]} #{naptr[:ttl]} #{naptr[:class]} NAPTR #{naptr[:order]} #{naptr[:preference]} #{naptr[:flags]} #{naptr[:service]} #{naptr[:regexp]} #{naptr[:replacement]}\n"
    end
+
+   out << "\n; Zone CAA Records\n" unless self.caa.empty?
+   self.caa.each do |caa|
+    out << "#{caa[:name]} #{caa[:ttl]} #{caa[:class]} CAA #{caa[:flag]} #{caa[:tag]} #{caa[:value]}\n"
+  end
 
    out
  end

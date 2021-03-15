@@ -2,51 +2,49 @@
 
 ## Description
 
-This class can read, manipulate and create DNS zone files. It supports A, AAAA, MX, NS, SOA, 
-TXT, CNAME, PTR and SRV records. The data can be accessed by the instance method of the same
-name. All except SOA return an array of hashes containing the named data. SOA directly returns the 
-hash since there can only be one SOA information.
+ This class can read, manipulate and create DNS zone files. The data can be accessed by the instance method of the same name. All except SOA return an array of hashes containing the named data. SOA directly turns the hash since there can only be one SOA information.
 
 The following hash keys are returned per record type:
 
-* SOA  
-     :ttl, :primary, :email, :serial, :refresh, :retry, :expire, :minimumTTL
-* A  
-     :name, :ttl, :class, :host
-* MX  
-     :name, :ttl, :class, :pri, :host
-* NS  
-     :name, :ttl, :class, :host
-* CNAME   
-     :name, :ttl, :class, :host
-* TXT  
-     :name, :ttl, :class, :text
-* A4 (AAAA)  
-     :name, :ttl, :class, :host
-* PTR  
-     :name, :ttl, :class, :host
-* SRV  
-     :name, :ttl, :class, :pri, :weight, :port, :host
-* DS  
-     :name, :ttl, :class, :key_tag, :algorithm, :digest_type, :digest
-* DNSKEY  
-     :name, :ttl, :class, :flag, :protocol, :algorithm, :public_key
-* RRSIG  
-     :name, :ttl, :class, :type_covered, :algorithm, :labels, :original_ttl,
-      :expiration, :inception, :key_tag, :signer, :signature
-* NSEC  
-     :name, :ttl, :class, :next, :types
-* NSEC3  
-     :name, :ttl, :class, :algorithm, :flags, :iterations, :salt, :next, :types
-* NSEC3PARAM  
-     :name, :ttl, :class, :algorithm, :flags, :iterations, :salt
-* TLSA  
-     :name, :ttl, :class, :certificate_usage, :selector, :matching_type, :data
-* NAPTR  
-     :name, :ttl, :class, :order, :preference, :flags, :service, :regexp, :replacement
-* SPF   
-     :name, :ttl, :class, :text
-
+* SOA
+   - :ttl, :primary, :email, :serial, :refresh, :retry, :expire, :minimumTTL
+* A
+   - :name, :ttl, :class, :host
+* MX
+   - :name, :ttl, :class, :pri, :host
+* NS
+   - :name, :ttl, :class, :host
+* CNAME
+   - :name, :ttl, :class, :host
+* TXT
+   - :name, :ttl, :class, :text
+* A4 (AAAA)
+   - :name, :ttl, :class, :host
+* PTR
+   - :name, :ttl, :class, :host
+* SRV
+   - :name, :ttl, :class, :pri, :weight, :port, :host
+* DS
+   - :name, :ttl, :class, :key_tag, :algorithm, :digest_type, :digest
+* DNSKEY
+   - :name, :ttl, :class, :flag, :protocol, :algorithm, :public_key
+* RRSIG
+   - :name, :ttl, :class, :type_covered, :algorithm, :labels, :original_ttl,
+     :expiration, :inception, :key_tag, :signer, :signature
+* NSEC
+   - :name, :ttl, :class, :next, :types
+* NSEC3
+   - :name, :ttl, :class, :algorithm, :flags, :iterations, :salt, :next, :types
+* NSEC3PARAM
+   - :name, :ttl, :class, :algorithm, :flags, :iterations, :salt
+* TLSA
+   - :name, :ttl, :class, :certificate_usage, :selector, :matching_type, :data
+* NAPTR
+   - :name, :ttl, :class, :order, :preference, :flags, :service, :regexp, :replacement
+* SPF
+   - :name, :ttl, :class, :text
+* CAA
+   - :name, :ttl, :class, :flag, :tag, :value
 # Examples
 
 ## Read a Zonefile
@@ -88,7 +86,7 @@ The following hash keys are returned per record type:
 
 # Name attribute magic
 
-Since 1.04 the :name attribute is preserved and returned as defined in a previous record if a zonefile entry
+The :name attribute is preserved and returned as defined in a previous record if a zonefile entry
 omits it. This should be the expected behavior for most users.
 You can switch this off globally by calling Zonefile.preserve_name(false)
 

@@ -9,7 +9,7 @@ require 'zonefile'
 
 $zonefile = ARGV[0] || 'test-zone.db'
 
-class TC_Zonefile  < Minitest::Unit::TestCase
+class TC_Zonefile  < Minitest::Test
 
   def setup
     @zf = Zonefile.from_file(File.dirname(__FILE__) + '/'+$zonefile, 'test-origin')
@@ -114,7 +114,6 @@ class TC_Zonefile  < Minitest::Unit::TestCase
   end
   
   def test_txt
-    puts @zf.txt.inspect
     assert_equal '"web;server"', @zf.txt[0][:text]
     assert_equal 'IN', @zf.txt[1][:class]
     assert_equal 'soup', @zf.txt[1][:name]
@@ -227,6 +226,35 @@ class TC_Zonefile  < Minitest::Unit::TestCase
       swap
       test_nsec
     end unless @swap_nsec
+  end
+
+  def test_caa
+    assert_equal "IN", @zf.caa[0][:class]
+    assert_equal "IN", @zf.caa[1][:class]
+    assert_equal "IN", @zf.caa[2][:class]
+
+    
+    assert_equal "@", @zf.caa[0][:name]
+    assert_equal "example.com.", @zf.caa[1][:name]
+    assert_equal "example.com.", @zf.caa[2][:name]
+
+    assert_equal 0, @zf.caa[0][:flag]
+    assert_equal 1, @zf.caa[1][:flag]
+    assert_equal 2, @zf.caa[2][:flag]
+
+
+    assert_equal 'issue', @zf.caa[0][:tag]
+    assert_equal 'iodef', @zf.caa[1][:tag]
+    assert_equal 'iodef', @zf.caa[2][:tag]
+
+    assert_equal '"caa.example.com"', @zf.caa[0][:value]
+    assert_equal '"mailto:security@example.com"', @zf.caa[1][:value]
+    assert_equal '"http://iodef.example.com/"', @zf.caa[2][:value]
+    begin
+      @swap_caa = true
+      swap
+      test_caa
+    end unless @swap_caa
   end
 
   def test_nsec3
