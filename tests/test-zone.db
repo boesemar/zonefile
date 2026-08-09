@@ -67,3 +67,6 @@ urn.example.com.        IN NAPTR 100  50  "s"    "http+N2L+N2C+N2R"  ""   www.ex
 @                       IN CAA   0 issue "caa.example.com"
 example.com.            IN  CAA 1    iodef      "mailto:security@example.com"
 example.com.            IN  CAA 2 iodef "http://iodef.example.com/"
+x._domainkey         IN  TXT     ( "v=DKIM1; k=rsa; "
+                                  "p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQAB"
+                                  "vkKZfivealphavkKZfivealpha" )

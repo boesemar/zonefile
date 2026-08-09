@@ -122,13 +122,34 @@ class TC_Zonefile  < Minitest::Test
     assert_equal "\"t=y; o=-\"", @zf.txt[2][:text]
     assert_equal 'maxnet.ao', @zf.txt[3][:text]
     assert_equal '_kerberos', @zf.txt[3][:name]
+    assert_equal 'x._domainkey', @zf.txt[4][:name]
+    assert_equal 'IN', @zf.txt[4][:class]
+    assert_equal '"v=DKIM1; k=rsa; " "p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQAB" "vkKZfivealphavkKZfivealpha"', @zf.txt[4][:text]
     
-    assert_equal 4, @zf.txt.size
+    assert_equal 5, @zf.txt.size
     begin
       @swap_txt = true
       swap
       test_txt
     end unless @swap_txt
+  end
+
+  def test_simplify_preserves_quoted_txt_values
+    zone = <<~ZONE
+      x._domainkey IN TXT (
+        "v=DKIM1; k=rsa; "
+        "p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQAB"
+        "vkKZfivealphavkKZfivealpha"
+      )
+    ZONE
+
+    expected = 'x._domainkey IN TXT "v=DKIM1; k=rsa; " "p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQAB" "vkKZfivealphavkKZfivealpha"'
+
+    assert_equal expected, Zonefile.simplify(zone)
+
+    zf = Zonefile.new(zone, 'test-origin')
+    assert_equal '"v=DKIM1; k=rsa; " "p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQAB" "vkKZfivealphavkKZfivealpha"', zf.txt.first[:text]
+    assert_match(/x\._domainkey\s+\t?IN\tTXT\t"v=DKIM1; k=rsa; " "p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQAB" "vkKZfivealphavkKZfivealpha"/, zf.output)
   end
   
   def test_spf
