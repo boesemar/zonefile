@@ -105,3 +105,5 @@ Julian Kornberger, patch to support TLSA records
 Nic P, SPF support
 
 Leon M, Fixes
+
+Jacques du Toit, Fixed issue where multi-line TXT comments

@@ -3,7 +3,7 @@ require 'rubygems'
 SPEC = Gem::Specification.new do |s|
 
  s.name         = 'zonefile'
- s.version      = '1.07'
+ s.version      = '1.08'
  s.author       = 'Martin Boese'
  s.email        = 'martin.boese@ita.ao'
  s.rubyforge_project = 'zonefile'
