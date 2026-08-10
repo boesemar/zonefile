@@ -1,3 +1,4 @@
+ENV['MT_NO_PLUGINS'] = '1' # avoid autoloading unrelated gem plugins (e.g. railties' minitest/rails_plugin)
 require 'minitest/autorun'
 
 
