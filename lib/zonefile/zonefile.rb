@@ -134,25 +134,60 @@ class Zonefile
  end
 
 
+ def self.strip_comments(value, preserve_leading = false)
+    had_leading_whitespace = preserve_leading && value =~ /^\s/
+    out = +''
+    in_quote = false
+    quote_char = nil
+    i = 0
+
+    while i < value.length
+      char = value[i].chr
+
+      if in_quote
+        out << char
+        if char == quote_char
+          in_quote = false
+          quote_char = nil
+        end
+      else
+        if char == '"' || char == "'"
+          in_quote = true
+          quote_char = char
+          out << char
+        elsif char == ';'
+          break
+        elsif char =~ /\s/
+          out << ' ' unless out.empty? || out[-1].chr == ' '
+        else
+          out << char
+        end
+      end
+
+      i += 1
+    end
+
+    result = preserve_leading ? out.rstrip : out.strip
+    result = " #{result}" if had_leading_whitespace && !result.empty? && result[0].chr != ' '
+    result.strip.empty? ? '' : result
+ end
+
  # Compact a zonefile content - removes empty lines, comments, 
  # converts tabs into spaces etc...
- def self.simplify(zf)
+  def self.simplify(zf)
     # concatenate everything split over multiple lines in parentheses - remove ;-comments in block
-    zf = zf.gsub(/(\([^\)]*?\))/) { |m| m.split(/\n/).map { |l| l.gsub(/\;.*$/, '') }.join("\n").gsub(/[\r\n]/, '').gsub( /[\(\)]/, '') }
+    zf = zf.gsub(/(\([^\)]*?\))/) do |m|
+      m[1..-2].split(/\n/).map { |line| strip_comments(line) }.reject(&:empty?).join(' ')
+    end
 
-    zf.split(/\n/).map do |line|
-        r = line.gsub(/\t/, ' ')
-        r = r.gsub(/\s+/, ' ')
-        		# FIXME: this is ugly and not accurate, couldn't find proper regex:
-        		#   Don't strip ';' if it's quoted. Happens a lot in TXT records.
-        (0..(r.length - 1)).find_all { |i| r[i].chr == ';' }.each do |comment_idx|
-           if !r[(comment_idx+1)..-1].index(/['"]/) then
-              r = r[0..(comment_idx-1)]
-              break
-           end
-        end
-        r
-    end.delete_if { |line| line.empty? || line[0].chr == ';'}.join("\n")
+    lines = []
+    zf.split(/\n/).each do |line|
+        line = line.gsub(/\t/, ' ')
+        line = strip_comments(line, true)
+        lines << line unless line.empty?
+    end
+
+    lines.join("\n")
  end
 
 
@@ -496,4 +531,3 @@ ENDH
  end
 
 end
-
